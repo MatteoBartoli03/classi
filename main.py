@@ -37,29 +37,29 @@ class Enemy(Entity):
 	def attack(self, player):
 		player.curHp -= self.damage
 		
-	def move(self, b):
-		if b != "":
+	def move(self, player_direction):
+		if player_direction in ["w", "a", "s", "d"]:
 			a = random.randint(1, 4)
 			if a == 1:
-				if g.y == e.y - 1 and g.x == e.x:
-					pass
-				else:
+				if g.y != e.y - 1 and g.x != e.x and p.y != e.y - 1 and g.x != p.x:
 					Entity.move(self, "w")
-			elif a == 2:
-				if g.x == e.x - 1 and g.y == e.y:
-					pass
-				else:
-					Entity.move(self, "a")
-			elif a == 3:
-				if g.y == e.y + 1 and g.x == e.x:
-					pass
 				else:
 					Entity.move(self, "s")
-			elif a == 4:
-				if g.x == e.x + 1 and g.y == e.y:
-					pass
+			elif a == 2:
+				if g.x != e.x - 1 and g.y != e.y and p.x != e.x - 1 and g.y != p.y:
+					Entity.move(self, "a")
 				else:
 					Entity.move(self, "d")
+			elif a == 3:
+				if g.y != e.y + 1 and g.x != e.x and p.y != e.y + 1 and g.x != p.x:
+					Entity.move(self, "s")
+				else:
+					Entity.move(self, "w")
+			elif a == 4:
+				if g.y != e.y + 1 and g.x != e.x and p.y != e.y + 1 and g.x != p.x:
+					Entity.move(self, "d")
+				else:
+					Entity.move(self, "a")
 
 class Field:
 	def create_field(x, y):
@@ -77,12 +77,14 @@ class Field:
 					field[w].append("[ ]")
 		return field 
 
-p = Player(0, 0, 10)
+p = Player(0, 0, 30)
 e = Enemy(6, 6, 5)
 g = Entity(7, 7)
 
+os.system("clear")
+print("la tua vita è {} su {} per una percentuale di {}".format(p.curHp, p.maxHp, (str((p.curHp/p.maxHp)*100) + "%" )))
+
 while True:
-	
 	field = Field.create_field(10, 10)
 	
 	for i in field:
@@ -130,8 +132,3 @@ Y88b  d88P Y8b.     888      888  888  888 Y88..88P 888     Y88b. Y88..88P      
 		print()
 		input()
 		break
-
-
-
-
-
