@@ -33,33 +33,31 @@ class Enemy(Entity):
 	def __init__(self, x, y, damage):
 		Entity.__init__(self, x, y)
 		self.damage = damage
+		self.monster_status = 0
 
 	def attack(self, player):
 		player.curHp -= self.damage
+		self.monster_status = 2
 		
-	def move(self, player_direction):
+	def move(self, player, player_direction):
+
 		if player_direction in ["w", "a", "s", "d"]:
-			a = random.randint(1, 4)
-			if a == 1:
-				if g.y != e.y - 1 and g.x != e.x and p.y != e.y - 1 and g.x != p.x:
+			if self.monster_status <= 0:
+				if player.y < self.y:
 					Entity.move(self, "w")
-				else:
+
+				elif player.y > self.y:
 					Entity.move(self, "s")
-			elif a == 2:
-				if g.x != e.x - 1 and g.y != e.y and p.x != e.x - 1 and g.y != p.y:
-					Entity.move(self, "a")
-				else:
-					Entity.move(self, "d")
-			elif a == 3:
-				if g.y != e.y + 1 and g.x != e.x and p.y != e.y + 1 and g.x != p.x:
-					Entity.move(self, "s")
-				else:
-					Entity.move(self, "w")
-			elif a == 4:
-				if g.y != e.y + 1 and g.x != e.x and p.y != e.y + 1 and g.x != p.x:
-					Entity.move(self, "d")
-				else:
-					Entity.move(self, "a")
+
+				elif player.y == self.y:
+					if player.x > self.x:
+						Entity.move(self, "d")
+
+					elif player.x < self.x:
+						Entity.move(self, "a")
+			else:
+				self.monster_status -= 1
+
 
 class Field:
 	def create_field(x, y):
@@ -77,7 +75,7 @@ class Field:
 					field[w].append("[ ]")
 		return field 
 
-p = Player(0, 0, 30)
+p = Player(0, 0, 15)
 e = Enemy(6, 6, 5)
 g = Entity(7, 7)
 
@@ -94,7 +92,7 @@ while True:
 	
 	a = input()
 	os.system("clear")
-	e.move(a)
+	e.move(p, a)
 	p.move(a)
 	
 	if (e.x == p.x + 1 and e.y == p.y) or (e.x == p.x - 1 and e.y == p.y) or (e.y == p.y + 1 and e.x == p.x) or (e.y == p.y - 1 and e.x == p.x):
